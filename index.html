@@ -1,0 +1,1882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Galaxy Games - Redesign</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --bg: radial-gradient(circle at top left, #111827, #020617 55%, #000000);
+      --bg-panel: rgba(15,23,42,0.96);
+      --accent: #38bdf8;
+      --accent-soft: rgba(56,189,248,0.18);
+      --accent-2: #a855f7;
+      --text-main: #f9fafb;
+      --text-muted: #9ca3af;
+      --border-subtle: rgba(148,163,184,0.3);
+      --radius-lg: 18px;
+      --shadow-soft: 0 24px 80px rgba(15,23,42,0.9);
+    }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+      color: var(--text-main);
+      background: var(--bg);
+      background-attachment: fixed;
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+    }
+    .app-shell {
+      display: grid;
+      grid-template-columns: 80px minmax(0, 1fr);
+      max-width: 1200px;
+      width: 100%;
+      height: 100vh;
+      padding: 18px;
+      gap: 18px;
+    }
+    /* Sidebar */
+    .sidebar {
+      background: rgba(15,23,42,0.96);
+      border-radius: 24px;
+      border: 1px solid rgba(15,23,42,0.9);
+      box-shadow: var(--shadow-soft);
+      padding: 14px 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo-circle {
+      width: 42px;
+      height: 42px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 20%, #38bdf8, #0f172a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      font-size: 1rem;
+      box-shadow: 0 10px 30px rgba(56,189,248,0.35);
+    }
+    .side-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .side-nav button {
+      all: unset;
+      cursor: pointer;
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      transition: all 0.18s ease;
+    }
+    .side-nav button:hover {
+      background: rgba(15,23,42,0.9);
+      color: var(--text-main);
+    }
+    .side-nav button.active {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #0b1120;
+      box-shadow: 0 10px 35px rgba(56,189,248,0.4);
+    }
+    .side-clock {
+      text-align: center;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      display: grid;
+      gap: 2px;
+    }
+    .side-clock-time {
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+    }
+    /* Main area */
+    .main {
+      background: var(--bg-panel);
+      border-radius: 24px;
+      border: 1px solid rgba(15,23,42,0.9);
+      box-shadow: var(--shadow-soft);
+      padding: 18px 22px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      overflow: hidden;
+    }
+    .main-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+    .brand-block {
+      display: grid;
+      gap: 4px;
+    }
+    .brand-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .brand-subtitle {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .pill-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      font-size: 0.75rem;
+    }
+    .pill {
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.35);
+      background: rgba(15,23,42,0.9);
+      color: var(--text-muted);
+    }
+    /* Top tab row */
+    .top-tabs {
+      display: inline-flex;
+      padding: 4px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.7);
+      border: 1px solid rgba(15,23,42,0.9);
+    }
+    .top-tabs button {
+      all: unset;
+      cursor: pointer;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      transition: all 0.16s;
+    }
+    .top-tabs button.active {
+      background: radial-gradient(circle at top left, var(--accent), var(--accent-2));
+      color: #020617;
+      box-shadow: 0 10px 25px rgba(56,189,248,0.45);
+      font-weight: 600;
+    }
+    /* Panels */
+    .panel-shell {
+      flex: 1;
+      border-radius: 18px;
+      background: radial-gradient(circle at top left, rgba(15,23,42,0.95), #020617);
+      padding: 18px 18px 16px;
+      display: flex;
+      flex-direction: column;
+    }
+    .tab-panel {
+      display: none;
+      height: 100%;
+    }
+    .tab-panel.active {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    /* Fix cutoff */
+    .tab-panel[data-tab="games"],
+    .tab-panel[data-tab="music"] {
+      overflow-y: auto;
+      max-height: calc(100vh - 220px);
+      padding-right: 4px;
+    }
+    /* Home panel */
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+      gap: 18px;
+      align-items: center;
+    }
+    .hero-title {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .hero-title span.accent {
+      color: var(--accent);
+    }
+    .hero-sub {
+      margin-top: 8px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      max-width: 380px;
+    }
+    .hero-actions {
+      margin-top: 14px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .btn-primary {
+      padding: 0.7rem 1.4rem;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      background: radial-gradient(circle at top left, var(--accent), var(--accent-2));
+      color: #020617;
+      font-weight: 600;
+      font-size: 0.9rem;
+      box-shadow: 0 12px 30px rgba(56,189,248,0.45);
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+    }
+    .btn-ghost {
+      padding: 0.6rem 1.1rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.4);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+    .hero-card {
+      border-radius: 20px;
+      border: 1px solid rgba(148,163,184,0.35);
+      background: linear-gradient(135deg, rgba(15,23,42,0.9), rgba(30,64,175,0.9));
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+    }
+    .hero-card-thumb {
+      border-radius: 14px;
+      background-image: url('https://images.pexels.com/photos/39501/lamborghini-brno-racing-car-automobiles-39501.jpeg?auto=compress&cs=tinysrgb&w=1200');
+      background-size: cover;
+      background-position: center;
+      height: 150px;
+    }
+    .hero-card-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+    .hero-card-meta {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      display: flex;
+      gap: 10px;
+    }
+    /* Games panel */
+    .games-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .games-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+    .search-bar {
+      position: relative;
+      width: 260px;
+      max-width: 100%;
+    }
+    .search-bar input {
+      width: 100%;
+      padding: 0.6rem 2rem 0.6rem 0.8rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.4);
+      background: rgba(15,23,42,0.85);
+      color: var(--text-main);
+      font-size: 0.85rem;
+    }
+    .search-bar span {
+      position: absolute;
+      right: 0.7rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+    .game-list {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 12px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+    .game-card {
+      border-radius: 16px;
+      border: 1px solid rgba(148,163,184,0.25);
+      background: rgba(15,23,42,0.9);
+      padding: 10px;
+      display: grid;
+      gap: 8px;
+      cursor: pointer;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+    }
+    .game-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 35px rgba(15,23,42,0.9);
+      border-color: var(--accent-soft);
+    }
+    .game-top-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .game-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 12px;
+      background-size: cover;
+      background-position: center;
+      background-color: rgba(31,41,55,0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+    }
+    .game-body {
+      display: grid;
+      gap: 2px;
+    }
+    .game-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    .game-desc {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    .game-thumb {
+      border-radius: 12px;
+      height: 96px;
+      background-size: cover;
+      background-position: center;
+      background-color: rgba(15,23,42,0.9);
+    }
+    .game-actions {
+      display: flex;
+      justify-content: flex-end;
+    }
+    .game-button {
+      padding: 0.4rem 0.9rem;
+      border-radius: 999px;
+      border: none;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #020617;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .game-button:hover {
+      filter: brightness(1.05);
+    }
+    /* Soundboard panel */
+    .soundboard-note {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    .soundboard-status {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      min-height: 1em;
+      margin-top: 6px;
+    }
+    .soundboard-grid {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 10px;
+    }
+    .sound-pad {
+      border-radius: 14px;
+      padding: 10px;
+      border: 1px solid rgba(148,163,184,0.3);
+      background: linear-gradient(135deg, rgba(15,23,42,0.9), rgba(15,23,42,0.98));
+      cursor: pointer;
+      display: grid;
+      gap: 4px;
+    }
+    .sound-pad .tag {
+      font-size: 0.7rem;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+    .sound-pad .title {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    .sound-pad .hint {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    .sound-pad.playing {
+      box-shadow: 0 0 0 1px var(--accent-soft), 0 0 20px rgba(56,189,248,0.4);
+    }
+    /* About panel */
+    .about-text {
+      max-width: 520px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+    /* Music tab */
+    .music-hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+      gap: 16px;
+      align-items: center;
+    }
+    .music-hero h2 {
+      margin: 0;
+      font-size: 1.4rem;
+      letter-spacing: 0.05em;
+    }
+    .music-hero p {
+      margin: 6px 0 0 0;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      max-width: 520px;
+    }
+    .music-pills {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .music-pill {
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.35);
+      background: rgba(15,23,42,0.78);
+      color: var(--text-muted);
+      font-size: 0.78rem;
+    }
+    .music-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 12px;
+    }
+    .music-card {
+      border: 1px solid rgba(148,163,184,0.22);
+      border-radius: 14px;
+      background: rgba(15,23,42,0.9);
+      padding: 10px;
+      display: grid;
+      gap: 8px;
+      box-shadow: 0 10px 26px rgba(2,6,23,0.55);
+    }
+    .music-card-header {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .music-thumb {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(56,189,248,0.28), rgba(168,85,247,0.28));
+      border: 1px solid rgba(148,163,184,0.3);
+      flex: 0 0 auto;
+      overflow: hidden;
+      display: grid;
+      place-items: center;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .music-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .music-meta {
+      min-width: 0;
+    }
+    .music-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .music-artist {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .music-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .music-btn {
+      padding: 6px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(148,163,184,0.35);
+      background: rgba(15,23,42,0.85);
+      color: var(--text-main);
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: background 0.15s ease, transform 0.12s ease;
+    }
+    .music-btn:hover {
+      background: rgba(56,189,248,0.1);
+      transform: translateY(-1px);
+    }
+    .music-btn.primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #020617;
+      border: none;
+      font-weight: 700;
+    }
+    .music-field {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .music-field input {
+      flex: 1;
+      min-width: 220px;
+      padding: 0.65rem 0.9rem;
+      border-radius: 12px;
+      border: 1px solid rgba(148,163,184,0.35);
+      background: rgba(15,23,42,0.85);
+      color: var(--text-main);
+      font-size: 0.9rem;
+    }
+    .music-sub {
+      color: var(--text-muted);
+      font-size: 0.82rem;
+    }
+    .music-empty {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      border: 1px dashed rgba(148,163,184,0.3);
+      border-radius: 12px;
+      padding: 12px;
+      text-align: center;
+    }
+    @media (max-width: 780px) {
+      .music-hero { grid-template-columns: 1fr; }
+    }
+  /* Global top search */
+.global-search {
+  position: relative;
+  width: min(420px, 40vw);
+  max-width: 100%;
+}
+.global-search input {
+  width: 100%;
+  padding: 0.6rem 2.4rem 0.6rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid rgba(148,163,184,0.4);
+  background: rgba(15,23,42,0.85);
+  color: var(--text-main);
+  font-size: 0.85rem;
+  outline: none;
+}
+.global-search button {
+  position: absolute;
+  right: 0.4rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: #020617;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 10px 25px rgba(56,189,248,0.25);
+}
+@media (max-width: 780px) {
+  .main-header { flex-wrap: wrap; }
+  .global-search { width: 100%; order: 3; }
+}
+  
+/* Panic button */
+#panic-btn{
+  position:fixed;
+  right:16px;
+  top:16px;
+  z-index:2147483647; /* ensure above game overlay */
+  padding:10px 14px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,0.25);
+  background:rgba(200,40,40,0.95);
+  color:#fff;
+  font-weight:700;
+  cursor:pointer;
+  box-shadow:0 8px 24px rgba(0,0,0,0.35);
+}
+#panic-btn:active{ transform:translateY(1px); }
+
+/* Keep panic button above full-screen game overlay */
+#game-overlay{
+  z-index:2147483000 !important;
+}
+
+
+
+
+/* Settings button */
+#settings-btn{
+  position:fixed;
+  right:94px; /* leaves room for Panic button on the right */
+  top:16px;
+  z-index:2147483647;
+  padding:10px 14px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,0.25);
+  background:rgba(40,40,40,0.92);
+  color:#fff;
+  font-weight:700;
+  cursor:pointer;
+  box-shadow:0 8px 24px rgba(0,0,0,0.35);
+}
+#settings-btn:active{ transform:translateY(1px); }
+
+
+/* Theme overrides */
+html[data-theme="light"]{
+  --bg: radial-gradient(circle at top left, #ffffff, #e5e7eb 55%, #d1d5db);
+  --bg-panel: rgba(255,255,255,0.92);
+  --text-main: #0f172a;
+  --text-muted: #334155;
+  --border-subtle: rgba(15,23,42,0.18);
+  --shadow-soft: 0 24px 80px rgba(0,0,0,0.18);
+}
+html[data-theme="amoled"]{
+  --bg: radial-gradient(circle at top left, #000000, #000000 65%, #000000);
+  --bg-panel: rgba(0,0,0,0.88);
+  --text-main: #f8fafc;
+  --text-muted: #a3a3a3;
+  --border-subtle: rgba(255,255,255,0.16);
+  --shadow-soft: 0 24px 80px rgba(0,0,0,0.75);
+}
+
+/* Compact mode */
+body.compact .sidebar{ padding:10px; }
+body.compact .content{ padding:16px; }
+body.compact .tab-panel{ padding:14px !important; }
+
+</style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="logo-circle">GX</div>
+      <nav class="side-nav">
+        <button class="active" data-tab-target="home" title="Home">🏠</button>
+        <button class="tab-btn" data-tab-target="settings">Settings</button>
+<button data-tab-target="games" title="Games">🎮</button>
+        <button data-tab-target="soundboard" title="Sound Board">🔊</button>
+        <button data-tab-target="music" title="Music">🎵</button>
+        <button data-tab-target="television" title="TV">📺</button>
+        <button data-tab-target="changelog" title="Changelog">📝</button>
+        <button data-tab-target="about" title="About">ℹ️</button>
+      </nav>
+      <div class="side-clock">
+        <div id="system-clock-time" class="side-clock-time"></div>
+        <div id="system-clock-date" class="side-clock-date"></div>
+      </div>
+    </aside>
+    <main class="main">
+      <div class="main-header">
+        <div class="brand-block">
+          <div class="brand-title">Galaxy Games</div>
+          <div class="brand-subtitle">Launch unblocked games in a single clean dashboard.</div>
+          <div class="pill-row">
+            <div class="pill">Fast launch</div>
+            <div class="pill">Full-screen overlay</div>
+          </div>
+        </div>
+        <div class="top-tabs">
+          <button class="active" data-tab-target="home">🏠 Home</button>
+          <button data-tab-target="games">🎮 Games</button>
+          <button data-tab-target="soundboard">🔊 Sound</button>
+          <button data-tab-target="music">🎵 Music</button>
+          <button data-tab-target="television">📺 TV</button>
+          <button data-tab-target="changelog">📝 Changelog</button>
+          <button data-tab-target="about">ℹ️ About</button>
+        </div>
+
+<div class="global-search" title="Search the current tab">
+  <input id="global-search" type="text" placeholder="Search games or music..." />
+  <button id="global-search-btn" aria-label="Search">🔎</button>
+</div>
+      </div>
+      <div class="panel-shell">
+        <!-- Home -->
+        <section class="tab-panel active" data-tab="home">
+          <div class="hero">
+            <div>
+              <div class="hero-title">Welcome to <span class="accent">Galaxy Games</span></div>
+              <div class="hero-sub">Browse a curated list of web games and launch them in a distraction-free overlay.</div>
+              <div class="hero-actions">
+                <button class="btn-primary" id="home-start-btn">Start playing</button>
+                <button class="btn-ghost" data-tab-jump="games">View all games</button>
+              </div>
+            </div>
+            <div class="hero-card">
+              <div class="hero-card-thumb"></div>
+              <div class="hero-card-title">Featured: Lamborghini Sprint</div>
+              <div class="hero-card-meta">
+                <span>Arcade • High score chase</span>
+                <span>Instant load via overlay</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        
+<!-- Global Search -->
+<script>
+  (function() {
+    const input = document.getElementById("global-search");
+    const btn = document.getElementById("global-search-btn");
+
+    function getActiveTab() {
+      return document.querySelector('[data-tab].active')?.dataset.tab || "home";
+    }
+
+    function run() {
+      const q = (input?.value || "").trim();
+      if (!q) return;
+
+      const tab = getActiveTab();
+
+      if (tab === "games") {
+        const gameSearch = document.getElementById("game-search");
+        if (gameSearch) {
+          gameSearch.value = q;
+          gameSearch.dispatchEvent(new Event("input", { bubbles: true }));
+          gameSearch.focus();
+        }
+        return;
+      }
+
+      if (tab === "music") {
+        const musicSearch = document.getElementById("music-search");
+        const musicBtn = document.getElementById("music-search-btn");
+        if (musicSearch) musicSearch.value = q;
+        musicBtn?.click();
+        musicSearch?.focus();
+        return;
+      }
+
+      // Convenience: if you're not on Games/Music, jump to Music by default.
+      const jumpMusic = document.querySelector('[data-tab-target="music"]');
+      jumpMusic?.click();
+      setTimeout(() => {
+        const musicSearch = document.getElementById("music-search");
+        const musicBtn = document.getElementById("music-search-btn");
+        if (musicSearch) musicSearch.value = q;
+        musicBtn?.click();
+        musicSearch?.focus();
+      }, 0);
+    }
+
+    btn?.addEventListener("click", run);
+    input?.addEventListener("keydown", (e) => { if (e.key === "Enter") run(); });
+
+    // Keep placeholder aligned with the active tab.
+    document.addEventListener("click", (e) => {
+      const tabBtn = e.target.closest("[data-tab-target]");
+      if (!tabBtn || !input) return;
+      const t = tabBtn.dataset.tabTarget;
+      input.placeholder = t === "games"
+        ? "Search games..."
+        : t === "music"
+          ? "Search iTunes..."
+          : "Search games or music...";
+    });
+  })();
+</script>
+
+  <!-- Games -->
+        <section class="tab-panel" data-tab="games">
+          <div class="games-header-row">
+            <div>
+              <div class="games-title">All games</div>
+              <div style="font-size: 0.8rem; color: var(--text-muted);">Search the feed and click any tile to launch.</div>
+            </div>
+            <div class="search-bar">
+              <input id="game-search" type="text" placeholder="Search games..." />
+              <span>🔍</span>
+            </div>
+          </div>
+          <div class="game-list" id="game-list"></div>
+        </section>
+
+        <!-- Soundboard -->
+        <section class="tab-panel" data-tab="soundboard">
+          <div class="games-title">Sound Board</div>
+          <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 6px;">Tap a pad for instant arcade sounds.</div>
+          <div id="soundboard-grid" class="soundboard-grid"></div>
+        </section>
+
+        <!-- Music -->
+        <section class="tab-panel" data-tab="music">
+          <div class="music-hero">
+            <div>
+              <h2>Galaxy Music Hub</h2>
+              <p>Stream 30-second previews from iTunes. Monthly picks and search in one place.</p>
+              <div class="music-pills">
+                <span class="music-pill">iTunes search</span>
+                <span class="music-pill">Preview snippets</span>
+                <span class="music-pill">Monthly spotlight</span>
+              </div>
+            </div>
+            <div class="music-card">
+              <div class="music-card-header">
+                <div class="music-thumb">NOW</div>
+                <div class="music-meta">
+                  <div class="music-title">Monthly Spotlight</div>
+                  <div class="music-artist">Hand-picked drops for this month</div>
+                </div>
+              </div>
+              <div class="music-actions">
+                <button class="music-btn primary" id="music-refresh">Refresh picks</button>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-top:12px;">
+            <div class="games-title">Monthly songs</div>
+            <div class="music-sub">Dark Thoughts · Montagem Rebola · Ransom · Headshot</div>
+          </div>
+          <div class="music-grid" id="music-monthly"></div>
+          <div style="margin-top:18px;">
+            <div class="games-title">Search iTunes</div>
+            <div class="music-field" style="margin-top:6px;">
+              <input id="music-search" type="text" placeholder="Search iTunes (e.g., Lil Tecca)" />
+              <button class="music-btn primary" id="music-search-btn">Search</button>
+            </div>
+          </div>
+          <div class="music-grid" id="music-results" style="margin-top:12px;"></div>
+          <div class="music-empty" id="music-empty" style="display:none;">No songs yet. Try a search.</div>
+        </section>
+
+        <!-- TV -->
+        <section class="tab-panel" data-tab="television">
+          <div class="games-title">Television</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:16px;">
+            <div>
+              <div style="font-weight:600;margin-bottom:6px;">Disney</div>
+              <iframe src="https://docs.google.com/presentation/d/1cqMoS7rNvOX77938GusdWNi6mYVPOfETCVsAVW9I9ps/preview?slide=id.g2caa1804f1f_0_71" style="width:100%;height:320px;border-radius:14px;border:1px solid rgba(148,163,184,0.2);" allowfullscreen></iframe>
+            </div>
+            <div>
+              <div style="font-weight:600;margin-bottom:6px;">Paramount</div>
+              <iframe src="https://docs.google.com/presentation/d/1CiZMdBm677M7EIus7gT89WPxwYPzXJQgwmXGv3sLAaw/preview?slide=id.g1b71f8bdb3c_2_77" style="width:100%;height:320px;border-radius:14px;border:1px solid rgba(148,163,184,0.2);" allowfullscreen></iframe>
+            </div>
+          </div>
+        </section>
+
+        <!-- About -->
+        <section class="tab-panel" data-tab="about">
+          <div class="games-title">About this launcher</div>
+          <div class="about-text">
+            Galaxy Games loads games from a public JSON feed and plays iTunes previews. Everything runs in your browser — no accounts, no tracking.
+          </div>
+        </section>
+
+
+        
+        <!-- Settings -->
+        <section class="tab-panel" data-tab="settings">
+          <h2 style="margin-top:0;">Settings</h2>
+          <p style="opacity:0.85;max-width:760px;">
+            These settings save to your browser only (localStorage).
+          </p>
+
+          <div class="settings-grid" style="display:grid;gap:16px;max-width:900px;">
+            <!-- Panic button settings -->
+            <div class="setting-card" style="padding:14px;border:1px solid var(--border-subtle);border-radius:14px;background:rgba(0,0,0,0.15);">
+              <h3 style="margin:0 0 10px 0;">Panic Button</h3>
+              <div style="display:grid;gap:10px;max-width:560px;">
+                <label style="display:block;">
+                  <div style="opacity:0.9;margin-bottom:6px;">Preset</div>
+                  <select id="panicPreset" style="width:100%;padding:10px;border-radius:10px;">
+                    <option value="https://myapps.classlink.com/home">ClassLink</option>
+                    <option value="https://lwsd414.instructure.com/">Canvas (LWSD)</option>
+                    <option value="custom">Custom…</option>
+                  </select>
+                </label>
+
+                <label style="display:block;">
+                  <div style="opacity:0.9;margin-bottom:6px;">Custom URL</div>
+                  <input id="panicCustomUrl" type="url" placeholder="https://example.com" style="width:100%;padding:10px;border-radius:10px;" />
+                </label>
+
+                <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+                  <button id="savePanicUrl" type="button" style="padding:10px 12px;border-radius:10px;cursor:pointer;">Save</button>
+                  <span id="panicStatus" style="opacity:0.85;"></span>
+                </div>
+
+                <label style="display:flex;gap:10px;align-items:center;cursor:pointer;user-select:none;">
+                  <input id="panicConfirm" type="checkbox" />
+                  <span style="opacity:0.9;">Ask “Are you sure?” before redirecting</span>
+                </label>
+
+                <div style="opacity:0.75;font-size:0.95em;">
+                  Clicking the Panic button will open your chosen link in this tab.
+                </div>
+              </div>
+            </div>
+
+            <!-- Theme settings -->
+            <div class="setting-card" style="padding:14px;border:1px solid var(--border-subtle);border-radius:14px;background:rgba(0,0,0,0.15);">
+              <h3 style="margin:0 0 10px 0;">Theme</h3>
+              <div style="display:grid;gap:10px;max-width:560px;">
+                <label style="display:block;">
+                  <div style="opacity:0.9;margin-bottom:6px;">Theme mode</div>
+                  <select id="themeMode" style="width:100%;padding:10px;border-radius:10px;">
+                    <option value="dark">Dark (default)</option>
+                    <option value="light">Light</option>
+                    <option value="amoled">AMOLED (pure black)</option>
+                  </select>
+                </label>
+
+                <label style="display:block;">
+                  <div style="opacity:0.9;margin-bottom:6px;">Accent color</div>
+                  <select id="accentPreset" style="width:100%;padding:10px;border-radius:10px;">
+                    <option value="blue">Blue</option>
+                    <option value="purple">Purple</option>
+                    <option value="green">Green</option>
+                    <option value="red">Red</option>
+                  </select>
+                </label>
+
+                <label style="display:flex;gap:10px;align-items:center;cursor:pointer;user-select:none;">
+                  <input id="compactMode" type="checkbox" />
+                  <span style="opacity:0.9;">Compact spacing</span>
+                </label>
+
+                <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+                  <button id="resetSettings" type="button" style="padding:10px 12px;border-radius:10px;cursor:pointer;">Reset to defaults</button>
+                  <span id="themeStatus" style="opacity:0.85;"></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- More -->
+            <div class="setting-card" style="padding:14px;border:1px solid var(--border-subtle);border-radius:14px;background:rgba(0,0,0,0.15);">
+              <h3 style="margin:0 0 10px 0;">More</h3>
+              <div style="display:grid;gap:10px;max-width:560px;">
+                <label style="display:flex;gap:10px;align-items:center;cursor:pointer;user-select:none;">
+                  <input id="downloadOnFail" type="checkbox" />
+                  <span style="opacity:0.9;">Auto-show “Download HTML” if a game fails to load</span>
+                </label>
+
+                <label style="display:flex;gap:10px;align-items:center;cursor:pointer;user-select:none;">
+                  <input id="openGamesNewTab" type="checkbox" />
+                  <span style="opacity:0.9;">Open games in a new tab (instead of the in-page overlay)</span>
+                </label>
+
+                <div style="opacity:0.75;font-size:0.95em;">
+                  Note: some embedded games may be blocked by browser security. Downloading the HTML helps, but some games still require a hosted server.
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+<!-- Changelog -->
+        <section class="tab-panel" data-tab="changelog">
+          <div class="games-title">Changelog</div>
+          <div class="about-text" style="line-height:1.55;">
+            Track what&#39;s new in this launcher.
+          </div>
+          <div class="card" style="padding:14px;">
+            <ul id="changelog-list" style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:10px;">
+              <li><strong>v1.2</strong> – Added a Changelog tab in the sidebar and top navigation.</li>
+              <li><strong>v1.1</strong> – Added in-game fallback banner with HTML download option when a game doesn&#39;t load.</li>
+              <li><strong>v1.0</strong> – Initial game launcher release.</li>
+            </ul>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- Tab System -->
+  <script>
+    (function() {
+      function setActive(tab) {
+        document.querySelectorAll('[data-tab]').forEach(p => p.classList.toggle('active', p.dataset.tab === tab));
+        document.querySelectorAll('[data-tab-target]').forEach(b => b.classList.toggle('active', b.dataset.tabTarget === tab));
+      }
+      document.addEventListener('click', e => {
+        const btn = e.target.closest('[data-tab-target]');
+        if (btn) setActive(btn.dataset.tabTarget);
+        const jump = e.target.closest('[data-tab-jump]');
+        if (jump) setActive(jump.dataset.tabJump);
+      });
+      document.getElementById('home-start-btn')?.addEventListener('click', () => {
+        setActive('games');
+        document.getElementById('game-search')?.focus();
+      });
+    })();
+  </script>
+
+  <!-- Games -->
+  <script>
+    (function() {
+      const ZONES_URL = "https://cdn.jsdelivr.net/gh/Notrexed/assets@latest/allzone.json";
+      const COVER_URL = "https://cdn.jsdelivr.net/gh/Notrexed/covers@main";
+      const HTML_URL = "https://cdn.jsdelivr.net/gh/Notrexed/html@latest";
+      const gameListEl = document.getElementById("game-list");
+      const searchInput = document.getElementById("game-search");
+      let zones = [];
+      let filtered = [];
+
+      function createOverlay() {
+        if (document.getElementById("game-overlay")) return;
+        const overlay = document.createElement("div");
+        overlay.id = "game-overlay";
+        overlay.style.cssText = `position:fixed;inset:0;background:rgba(0,0,0,0.94);backdrop-filter:blur(10px);display:none;align-items:stretch;justify-content:center;z-index:9999;`;
+        const iframe = document.createElement("iframe");
+        iframe.id = "game-frame";
+        iframe.style.cssText = "border:none;width:100%;height:100%;background:#000;";
+        iframe.setAttribute("allow", "accelerometer; autoplay; fullscreen; clipboard-read; clipboard-write; gamepad;");
+        iframe.referrerPolicy = "no-referrer";
+        const closeBtn = document.createElement("button");
+        closeBtn.textContent = "×";
+        closeBtn.style.cssText = `position:fixed;top:18px;right:24px;width:36px;height:36px;border-radius:999px;border:none;background:rgba(15,23,42,0.85);color:#e5e7eb;font-size:22px;cursor:pointer;z-index:10000;`;
+        closeBtn.onclick = () => overlay.style.display = "none";
+        overlay.appendChild(iframe);
+        overlay.appendChild(closeBtn);
+
+        // Fallback / Download panel (shown if a game fails to load or user wants an offline copy)
+        const fallback = document.createElement("div");
+        fallback.id = "game-fallback";
+        fallback.style.cssText = `
+          position:fixed;
+          left:50%;
+          bottom:18px;
+          transform:translateX(-50%);
+          max-width:min(720px, calc(100vw - 24px));
+          width:fit-content;
+          padding:12px 14px;
+          border-radius:14px;
+          border:1px solid rgba(148,163,184,0.35);
+          background:rgba(15,23,42,0.92);
+          box-shadow:0 18px 60px rgba(0,0,0,0.55);
+          display:none;
+          z-index:10001;
+        `;
+        fallback.innerHTML = `
+          <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+            <div style="min-width:220px;">
+              <div style="font-weight:700;font-size:0.92rem;">Having trouble loading this game?</div>
+              <div id="game-fallback-msg" style="color:rgba(156,163,175,0.95);font-size:0.82rem;margin-top:2px;">
+                If it doesn’t work, download the HTML and open it locally.
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-left:auto;">
+              <button id="game-download-btn" style="padding:8px 10px;border-radius:12px;border:none;cursor:pointer;font-weight:700;background:linear-gradient(135deg, var(--accent), var(--accent-2));color:#020617;">
+                Download HTML
+              </button>
+              <a id="game-open-source" href="#" target="_blank" rel="noopener" style="padding:8px 10px;border-radius:12px;border:1px solid rgba(148,163,184,0.35);background:rgba(15,23,42,0.85);color:var(--text-main);text-decoration:none;">
+                Open source
+              </a>
+              <button id="game-close-fallback" style="padding:8px 10px;border-radius:12px;border:1px solid rgba(148,163,184,0.35);background:rgba(15,23,42,0.85);color:var(--text-main);cursor:pointer;">
+                Dismiss
+              </button>
+            </div>
+          </div>
+        `;
+        fallback.querySelector("#game-close-fallback").onclick = () => (fallback.style.display = "none");
+        overlay.appendChild(fallback);
+        overlay.onclick = e => { if (e.target === overlay) overlay.style.display = "none"; };
+        document.addEventListener("keydown", e => { if (e.key === "Escape") overlay.style.display = "none"; });
+        document.body.appendChild(overlay);
+      }
+
+      function openGame(zone) {
+        if (!zone) return;
+        createOverlay();
+        const overlay = document.getElementById("game-overlay");
+        const iframe = document.getElementById("game-frame");
+        const fallback = document.getElementById("game-fallback");
+        const downloadBtn = document.getElementById("game-download-btn");
+        const openSource = document.getElementById("game-open-source");
+        const msg = document.getElementById("game-fallback-msg");
+
+        overlay.style.display = "flex";
+        document.body.style.overflow = "hidden";
+
+        // Reset fallback UI
+        if (fallback) fallback.style.display = "none";
+        if (msg) msg.textContent = "If it doesn’t work, download the HTML and open it locally.";
+
+        const url = (zone.url || "").replace("{HTML_URL}", HTML_URL).replace("{COVER_URL}", COVER_URL);
+        let lastHtml = "";
+        let lastFilename = (zone.name || "game").toString().trim() || "game";
+
+        // Safer filename
+        lastFilename = lastFilename
+          .replace(/[^a-z0-9\-\_ ]/gi, "")
+          .replace(/\s+/g, "_")
+          .slice(0, 60) || "game";
+
+        function downloadHtml(filename, htmlText) {
+          const blob = new Blob([htmlText], { type: "text/html;charset=utf-8" });
+          const a = document.createElement("a");
+          a.href = URL.createObjectURL(blob);
+          a.download = filename + ".html";
+          document.body.appendChild(a);
+          a.click();
+          setTimeout(() => {
+            URL.revokeObjectURL(a.href);
+            a.remove();
+          }, 0);
+        }
+
+        if (openSource) openSource.href = url;
+
+        // Download button behavior:
+        // - If we already have the HTML, download immediately.
+        // - Otherwise, try to fetch and then download.
+        if (downloadBtn) {
+          downloadBtn.onclick = async () => {
+            try {
+              if (lastHtml) {
+                downloadHtml(lastFilename, lastHtml);
+                return;
+              }
+              const res = await fetch(url, { cache: "no-store" });
+              const html = await res.text();
+              lastHtml = html;
+              downloadHtml(lastFilename, lastHtml);
+            } catch {
+              if (fallback) fallback.style.display = "block";
+              if (msg) msg.textContent = "Download failed. Try opening the source instead.";
+            }
+          };
+        }
+
+        // Load into iframe (timeout helps detect blocked fetches / slow networks)
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 12000);
+
+        fetch(url, { signal: controller.signal, cache: "no-store" })
+          .then(res => res.text())
+          .then(html => {
+            clearTimeout(timeout);
+            lastHtml = html;
+
+            const doc = iframe.contentWindow.document;
+            doc.open();
+            doc.write(html);
+            doc.close();
+
+            // Always allow the user to download a local copy, even if it loaded.
+            if (fallback) fallback.style.display = "block";
+          })
+          .catch(() => {
+            clearTimeout(timeout);
+            try {
+              iframe.contentWindow.document.body.innerHTML = "<div style='color:#e5e7eb;font-family:system-ui;padding:18px;'>Failed to load game.</div>";
+            } catch {}
+            if (fallback) fallback.style.display = "block";
+            if (msg) msg.textContent = "This game did not load in your browser. Use Download HTML or Open source.";
+          });
+      }
+
+
+      function render(list) {
+        gameListEl.innerHTML = "";
+        list.forEach(z => {
+          if ((z.name || "").toLowerCase().includes("ovo") || z.id === -1) return;
+          const card = document.createElement("div");
+          card.className = "game-card";
+          const cover = (z.cover || "").replace("{COVER_URL}", COVER_URL).replace("{HTML_URL}", HTML_URL);
+          card.innerHTML = `
+            <div class="game-top-row">
+              <div class="game-icon" ${cover ? `style="background-image:url(${cover})"` : ""}>${cover ? "" : "??"}</div>
+              <div class="game-body">
+                <div class="game-title">${z.name || "Untitled"}</div>
+                <div class="game-desc">${z.author || "Click to play"}</div>
+              </div>
+            </div>
+            <div class="game-actions"><button class="game-button">Play</button></div>
+          `;
+          card.onclick = () => openGame(z);
+          card.querySelector(".game-button").onclick = e => { e.stopPropagation(); openGame(z); };
+          gameListEl.appendChild(card);
+        });
+      }
+
+      function filter(q) {
+        if (!zones || zones.length === 0) return;
+        q = q.trim().toLowerCase();
+        filtered = q ? zones.filter(z => (z.name || "").toLowerCase().includes(q)) : zones;
+        render(filtered);
+      }
+
+      async function init() {
+        const res = await fetch(ZONES_URL + "?t=" + Date.now());
+        zones = await res.json();
+        render(zones);
+        searchInput?.addEventListener("input", e => filter(e.target.value));
+      }
+
+      if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+      else init();
+    })();
+  </script>
+
+  <!-- Soundboard -->
+  <script>
+    (function () {
+      const pads = [
+        { label: "Laser Sweep", tag: "Arcade", tones: [{ freq: 760, duration: 0.18 }, { freq: 280, duration: 0.22, delay: 0.02 }] },
+        { label: "Coin Pickup", tag: "Retro", tones: [{ freq: 980, duration: 0.12 }, { freq: 1280, duration: 0.16, delay: 0.02 }] },
+        { label: "Air Horn", tag: "Hype", tones: [{ freq: 220, duration: 0.45 }] },
+        { label: "Ping", tag: "Alert", tones: [{ freq: 660, duration: 0.12 }, { freq: 880, duration: 0.16, delay: 0.05 }] },
+      ];
+      const grid = document.getElementById("soundboard-grid");
+      let audioCtx = null;
+
+      function play(tones) {
+        if (!audioCtx) {
+          const Ctx = window.AudioContext || window.webkitAudioContext;
+          if (!Ctx) return;
+          audioCtx = new Ctx();
+        }
+        if (audioCtx.state === "suspended") audioCtx.resume();
+        let t = audioCtx.currentTime;
+        tones.forEach(({ freq, duration, delay = 0 }) => {
+          const o = audioCtx.createOscillator();
+          const g = audioCtx.createGain();
+          o.type = "sine";
+          o.frequency.setValueAtTime(freq, t);
+          g.gain.setValueAtTime(0.001, t);
+          g.gain.exponentialRampToValueAtTime(0.35, t + 0.02);
+          g.gain.exponentialRampToValueAtTime(0.001, t + duration);
+          o.connect(g).connect(audioCtx.destination);
+          o.start(t); o.stop(t + duration + 0.05);
+          t += duration + delay;
+        });
+      }
+
+      if (grid) {
+        grid.innerHTML = "";
+        pads.forEach(pad => {
+          const el = document.createElement("div");
+          el.className = "sound-pad";
+          el.innerHTML = `<div class="tag">${pad.tag}</div><div class="title">${pad.label}</div>`;
+          el.onclick = () => play(pad.tones);
+          grid.appendChild(el);
+        });
+      }
+    })();
+  </script>
+
+  <!-- Music -->
+  <script>
+    (function () {
+      const monthlyEl = document.getElementById("music-monthly");
+      const resultsEl = document.getElementById("music-results");
+      const searchInput = document.getElementById("music-search");
+      const searchBtn = document.getElementById("music-search-btn");
+      const refreshBtn = document.getElementById("music-refresh");
+      const emptyEl = document.getElementById("music-empty");
+
+      const MONTHLY_PICKS = [
+        { title: "Dark Thoughts", artist: "Lil Tecca" },
+        { title: "Montagem Rebola", artist: "" },
+        { title: "Ransom", artist: "Lil Tecca" },
+        { title: "Headshot 223", artist: "IShowSpeed" },
+      ];
+
+      let audio = new Audio();
+      let currentBtn = null;
+
+      audio.addEventListener("ended", () => {
+        if (currentBtn) {
+          setBtnState(currentBtn, false);
+          currentBtn = null;
+        }
+      });
+
+      function escapeHTML(s) {
+        return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+      }
+
+      function initials(title) {
+        return (title || "NW").split(" ").map(p => p.trim()[0] || "").join("").slice(0, 2).toUpperCase();
+      }
+
+      function setBtnState(btn, playing) {
+  if (!btn) return;
+  btn.textContent = playing ? "Pause preview" : "Play preview";
+  btn.disabled = false;
+  btn.setAttribute("aria-pressed", playing ? "true" : "false");
+}
+
+      function bindPreview(btn, track) {
+        if (!btn || !track.previewUrl) {
+          if (btn) {
+            btn.textContent = "No preview";
+            btn.disabled = true;
+          }
+          return;
+        }
+        btn.addEventListener("click", () => {
+          if (currentBtn && currentBtn !== btn) {
+            setBtnState(currentBtn, false);
+          }
+          if (currentBtn === btn && !audio.paused) {
+            audio.pause();
+            setBtnState(btn, false);
+            currentBtn = null;
+            return;
+          }
+          audio.src = track.previewUrl;
+          audio.play().then(() => {
+            currentBtn = btn;
+            setBtnState(btn, true);
+          }).catch(() => {
+            btn.textContent = "Preview blocked";
+          });
+        });
+      }
+
+      function cardFromTrack(track) {
+        const card = document.createElement("div");
+        card.className = "music-card";
+        const artHTML = track.art
+          ? `<img src="${escapeHTML(track.art)}">`
+          : initials(track.title);
+        card.innerHTML = `
+          <div class="music-card-header">
+            <div class="music-thumb">${artHTML}</div>
+            <div class="music-meta">
+              <div class="music-title">${escapeHTML(track.title)}</div>
+              <div class="music-artist">${escapeHTML(track.artist)}${track.album ? " · " + escapeHTML(track.album) : ""}</div>
+            </div>
+          </div>
+          <div class="music-actions">
+            <button class="music-btn primary">Play preview</button>
+            ${track.itunesUrl ? `<a class="music-btn" href="${escapeHTML(track.itunesUrl)}" target="_blank">iTunes</a>` : ""}
+          </div>
+        `;
+        const previewBtn = card.querySelector(".music-btn.primary");
+        bindPreview(previewBtn, track);
+        return card;
+      }
+
+      function jsonp(url, timeoutMs = 12000) {
+  return new Promise((resolve, reject) => {
+    const cb = "itunes_jsonp_" + Math.random().toString(36).slice(2);
+    const script = document.createElement("script");
+    const sep = url.includes("?") ? "&" : "?";
+    const timeout = setTimeout(() => {
+      cleanup();
+      reject(new Error("JSONP timeout"));
+    }, timeoutMs);
+
+    function cleanup() {
+      clearTimeout(timeout);
+      delete window[cb];
+      script.remove();
+    }
+
+    window[cb] = (payload) => {
+      cleanup();
+      resolve(payload);
+    };
+
+    script.src = url + sep + "callback=" + cb;
+    script.onerror = () => {
+      cleanup();
+      reject(new Error("JSONP error"));
+    };
+    document.head.appendChild(script);
+  });
+}
+
+async function fetchItunes(term, limit = 6) {
+  const base = "https://itunes.apple.com/search";
+  const url = `${base}?term=${encodeURIComponent(term)}&media=music&entity=musicTrack&limit=${limit}`;
+  // iTunes Search is often blocked by CORS from static pages; JSONP is the most reliable option.
+  const data = await jsonp(url);
+  return (data.results || []).map(r => ({
+    title: r.trackName || "Unknown",
+    artist: r.artistName || "Unknown Artist",
+    album: r.collectionName,
+    art: r.artworkUrl100,
+    previewUrl: r.previewUrl,
+    itunesUrl: r.trackViewUrl
+  })).filter(r => r.title);
+}
+
+      async function loadMonthly() {
+        monthlyEl.innerHTML = '<div style="color:var(--text-muted);">Loading...</div>';
+        const tracks = await Promise.all(MONTHLY_PICKS.map(async pick => {
+          try {
+            const hits = await fetchItunes(`${pick.title} ${pick.artist}`, 1);
+            return hits[0] || pick;
+          } catch {
+            return { ...pick, previewUrl: "", itunesUrl: "", art: "" };
+          }
+        }));
+        monthlyEl.innerHTML = "";
+        tracks.forEach(t => monthlyEl.appendChild(cardFromTrack(t)));
+      }
+
+      async function runSearch() {
+        const term = searchInput.value.trim();
+        if (!term) return;
+        resultsEl.innerHTML = '<div style="color:var(--text-muted);">Searching...</div>';
+        emptyEl.style.display = "none";
+        try {
+          const hits = await fetchItunes(term, 9);
+          resultsEl.innerHTML = "";
+          if (hits.length === 0) {
+            emptyEl.textContent = "No results.";
+            emptyEl.style.display = "block";
+          } else {
+            hits.forEach(t => resultsEl.appendChild(cardFromTrack(t)));
+          }
+        } catch (e) {
+          resultsEl.innerHTML = "";
+          emptyEl.textContent = "Search failed.";
+          emptyEl.style.display = "block";
+        }
+      }
+
+      refreshBtn?.addEventListener("click", loadMonthly);
+      searchBtn?.addEventListener("click", runSearch);
+      searchInput?.addEventListener("keypress", e => { if (e.key === "Enter") runSearch(); });
+      loadMonthly();
+    })();
+  </script>
+
+  <!-- Clock -->
+  <script>
+    function updateClock() {
+      const now = new Date();
+      let h = now.getHours(), m = now.getMinutes().toString().padStart(2, '0'), am = h >= 12 ? 'PM' : 'AM';
+      h = h % 12 || 12;
+      document.getElementById('system-clock-time').textContent = `${h}:${m} ${am}`;
+      const mo = (now.getMonth() + 1).toString().padStart(2, '0');
+      const d = now.getDate().toString().padStart(2, '0');
+      const y = now.getFullYear();
+      document.getElementById('system-clock-date').textContent = `${mo}/${d}/${y}`;
+    }
+    updateClock();
+    setInterval(updateClock, 30000);
+  
+
+// Panic button config
+(function(){
+  const KEY = "panic_url_v1";
+  const DEFAULT_URL = "https://myapps.classlink.com/home";
+
+  function normalizeUrl(u){
+    try{
+      const url = new URL(u);
+      return url.toString();
+    }catch(e){
+      return "";
+    }
+  }
+
+  function getPanicUrl(){
+    const saved = localStorage.getItem(KEY);
+    return saved || DEFAULT_URL;
+  }
+
+  function setPanicUrl(u){
+    localStorage.setItem(KEY, u);
+  }
+
+  // Wire Panic button
+  const panicBtn = document.getElementById("panic-btn");
+  if(panicBtn){
+    panicBtn.addEventListener("click", function(){
+      const target = getPanicUrl();
+      window.location.href = target;
+    });
+  }
+
+  // Wire Settings controls (if present)
+  const preset = document.getElementById("panicPreset");
+  const custom = document.getElementById("panicCustomUrl");
+  const save = document.getElementById("savePanicUrl");
+  const status = document.getElementById("panicStatus");
+
+  function refreshSettings(){
+    const current = getPanicUrl();
+    if(custom) custom.value = current;
+
+    if(preset){
+      const options = Array.from(preset.options).map(o => o.value);
+      if(options.includes(current)){
+        preset.value = current;
+      }else{
+        preset.value = "custom";
+      }
+      if(custom){
+        custom.disabled = preset.value !== "custom";
+        custom.style.opacity = custom.disabled ? "0.6" : "1";
+      }
+    }
+    if(status) status.textContent = "Current: " + current;
+  }
+
+  if(preset){
+    preset.addEventListener("change", function(){
+      if(!custom) return;
+      if(preset.value === "custom"){
+        custom.disabled = false;
+        custom.style.opacity = "1";
+        custom.focus();
+      }else{
+        custom.disabled = true;
+        custom.style.opacity = "0.6";
+        custom.value = preset.value;
+      }
+    });
+  }
+
+  if(save){
+    save.addEventListener("click", function(){
+      let chosen = "";
+      if(preset && preset.value !== "custom"){
+        chosen = preset.value;
+      }else if(custom){
+        chosen = normalizeUrl(custom.value.trim());
+      }
+      if(!chosen){
+        if(status) status.textContent = "Please enter a valid URL (include https://).";
+        return;
+      }
+      setPanicUrl(chosen);
+      if(status) status.textContent = "Saved: " + chosen;
+      refreshSettings();
+    });
+  }
+
+  // Initialize
+  refreshSettings();
+})();
+
+
+
+// Always-visible Settings button behavior
+(function(){
+  const btn = document.getElementById("settings-btn");
+  if(!btn) return;
+
+  function closeGameOverlayIfOpen(){
+    const overlay = document.getElementById("game-overlay");
+    if(!overlay) return;
+
+    // Common patterns: hidden via display/hidden class; try a few safe options.
+    overlay.style.display = "none";
+    overlay.classList.add("hidden");
+    overlay.setAttribute("aria-hidden", "true");
+
+    // If there's an iframe inside, stop it (helps unfreeze audio)
+    const iframe = overlay.querySelector("iframe");
+    if(iframe){
+      iframe.src = "about:blank";
+    }
+  }
+
+  function openSettingsTab(){
+    // Prefer clicking an existing sidebar/topnav settings tab button if present
+    const candidateSelectors = [
+      '[data-tab-target="settings"]',
+      '[data-tab="settings"]',
+      'button[data-target="settings"]',
+      'a[data-target="settings"]',
+      '#tab-settings',
+      '#nav-settings'
+    ];
+    for(const sel of candidateSelectors){
+      const el = document.querySelector(sel);
+      if(el){
+        el.click();
+        return;
+      }
+    }
+
+    // Fallback: show a panel with data-tab="settings" and hide others with data-tab
+    const panels = document.querySelectorAll('[data-tab]');
+    panels.forEach(p => {
+      if(p.getAttribute("data-tab") === "settings"){
+        p.style.display = "";
+        p.classList.remove("hidden");
+      }else{
+        p.style.display = "none";
+        p.classList.add("hidden");
+      }
+    });
+  }
+
+  btn.addEventListener("click", function(){
+    closeGameOverlayIfOpen();
+    openSettingsTab();
+    // Scroll to top so settings are visible
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+})();
+
+</script>
+
+<!-- Panic Button (always visible) -->
+<button id="panic-btn" title="Panic" aria-label="Panic Button">Panic</button>
+
+
+<!-- Settings Button (always visible) -->
+<button id="settings-btn" title="Settings" aria-label="Settings Button">Settings</button>
+
+
+<!-- FINAL_FIXED_HANDLERS_START -->
+<script>
+(function(){
+  const KEY = "panic_url_v1";
+  const DEFAULT_URL = "https://myapps.classlink.com/home";
+
+  function normalizeUrl(u){
+    try { return new URL(u).toString(); } catch(e){ return ""; }
+  }
+  function getPanicUrl(){
+    return localStorage.getItem(KEY) || DEFAULT_URL;
+  }
+
+  // Delegated click handlers so they work even if scripts run before buttons exist.
+  document.addEventListener("click", function(e){
+    const panic = e.target.closest && e.target.closest("#panic-btn");
+    if(panic){
+      e.preventDefault();
+      const target = getPanicUrl();
+      // Navigate in the same tab immediately
+      window.location.assign(target);
+      return;
+    }
+
+    const settings = e.target.closest && e.target.closest("#settings-btn");
+    if(settings){
+      e.preventDefault();
+
+      // Hide/close game overlay if present (covers screen during games)
+      const overlay = document.getElementById("game-overlay");
+      if(overlay){
+        overlay.style.display = "none";
+        overlay.classList.add("hidden");
+        overlay.setAttribute("aria-hidden","true");
+        const iframe = overlay.querySelector("iframe");
+        if(iframe) iframe.src = "about:blank";
+      }
+
+      // Switch to Settings tab using the launcher’s existing tab system (best-effort)
+      const tabButtons = document.querySelectorAll("[data-tab-target],[data-target]");
+      for(const b of tabButtons){
+        const t = b.getAttribute("data-tab-target") || b.getAttribute("data-target");
+        if(t && t.toLowerCase() === "settings"){
+          b.click();
+          window.scrollTo({top:0, behavior:"smooth"});
+          return;
+        }
+      }
+
+      // Fallback: show settings panel directly
+      const panels = document.querySelectorAll("[data-tab]");
+      panels.forEach(p => {
+        const isSettings = (p.getAttribute("data-tab") || "").toLowerCase() === "settings";
+        p.style.display = isSettings ? "" : "none";
+        p.classList.toggle("hidden", !isSettings);
+      });
+      window.scrollTo({top:0, behavior:"smooth"});
+    }
+  }, true);
+
+  // Ensure buttons are clickable even above overlays
+  document.addEventListener("DOMContentLoaded", function(){
+    const panicBtn = document.getElementById("panic-btn");
+    const settingsBtn = document.getElementById("settings-btn");
+    if(panicBtn) panicBtn.style.pointerEvents = "auto";
+    if(settingsBtn) settingsBtn.style.pointerEvents = "auto";
+
+    // If an overlay/iframe creates issues, ensure our buttons remain fixed at viewport
+    // (No-op here; CSS already positions them.)
+  });
+
+})();
+</script>
+<!-- FINAL_FIXED_HANDLERS_END -->
+
+<script>
+
+// Settings wiring (theme + more toggles + panic confirmation)
+(function(){
+  const KEYS = {
+    theme: "ui_theme_v1",
+    accent: "ui_accent_v1",
+    compact: "ui_compact_v1",
+    panicUrl: "panic_url_v1",
+    panicConfirm: "panic_confirm_v1",
+    downloadOnFail: "download_on_fail_v1",
+    openGamesNewTab: "open_games_new_tab_v1"
+  };
+
+  const DEFAULTS = {
+    theme: "dark",
+    accent: "blue",
+    compact: "0",
+    panicConfirm: "0",
+    downloadOnFail: "1",
+    openGamesNewTab: "0"
+  };
+
+  const ACCENTS = {
+    blue:   {accent:"#38bdf8", soft:"rgba(56,189,248,0.18)"},
+    purple: {accent:"#a855f7", soft:"rgba(168,85,247,0.18)"},
+    green:  {accent:"#22c55e", soft:"rgba(34,197,94,0.18)"},
+    red:    {accent:"#ef4444", soft:"rgba(239,68,68,0.18)"}
+  };
+
+  function $(id){ return document.getElementById(id); }
+  function get(k, d){ return localStorage.getItem(k) ?? d; }
+  function set(k, v){ localStorage.setItem(k, v); }
+
+  function applyTheme(){
+    const mode = get(KEYS.theme, DEFAULTS.theme);
+    document.documentElement.setAttribute("data-theme", mode);
+
+    const ap = get(KEYS.accent, DEFAULTS.accent);
+    const a = ACCENTS[ap] || ACCENTS.blue;
+    document.documentElement.style.setProperty("--accent", a.accent);
+    document.documentElement.style.setProperty("--accent-soft", a.soft);
+
+    const compact = get(KEYS.compact, DEFAULTS.compact) === "1";
+    document.body.classList.toggle("compact", compact);
+  }
+
+  function refreshUI(){
+    const themeMode = $("themeMode");
+    const accentPreset = $("accentPreset");
+    const compactMode = $("compactMode");
+    const panicConfirm = $("panicConfirm");
+    const downloadOnFail = $("downloadOnFail");
+    const openGamesNewTab = $("openGamesNewTab");
+    const themeStatus = $("themeStatus");
+
+    if(themeMode) themeMode.value = get(KEYS.theme, DEFAULTS.theme);
+    if(accentPreset) accentPreset.value = get(KEYS.accent, DEFAULTS.accent);
+    if(compactMode) compactMode.checked = get(KEYS.compact, DEFAULTS.compact) === "1";
+    if(panicConfirm) panicConfirm.checked = get(KEYS.panicConfirm, DEFAULTS.panicConfirm) === "1";
+    if(downloadOnFail) downloadOnFail.checked = get(KEYS.downloadOnFail, DEFAULTS.downloadOnFail) === "1";
+    if(openGamesNewTab) openGamesNewTab.checked = get(KEYS.openGamesNewTab, DEFAULTS.openGamesNewTab) === "1";
+
+    if(themeStatus){
+      const t = get(KEYS.theme, DEFAULTS.theme);
+      const a = get(KEYS.accent, DEFAULTS.accent);
+      themeStatus.textContent = `Theme: ${t}, Accent: ${a}`;
+    }
+  }
+
+  // Hook into existing Panic click handler (FINAL handler reads panic_url_v1).
+  // We only add confirmation behavior by intercepting click early.
+  document.addEventListener("click", function(e){
+    const panic = e.target.closest && e.target.closest("#panic-btn");
+    if(!panic) return;
+
+    const confirmOn = get(KEYS.panicConfirm, DEFAULTS.panicConfirm) === "1";
+    if(!confirmOn) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+    const target = localStorage.getItem(KEYS.panicUrl) || "https://myapps.classlink.com/home";
+    if(window.confirm("Open Panic link now?")){
+      window.location.assign(target);
+    }
+  }, true);
+
+  function bind(){
+    const themeMode = $("themeMode");
+    const accentPreset = $("accentPreset");
+    const compactMode = $("compactMode");
+    const reset = $("resetSettings");
+
+    const panicConfirm = $("panicConfirm");
+    const downloadOnFail = $("downloadOnFail");
+    const openGamesNewTab = $("openGamesNewTab");
+
+    if(themeMode) themeMode.addEventListener("change", () => { set(KEYS.theme, themeMode.value); applyTheme(); refreshUI(); });
+    if(accentPreset) accentPreset.addEventListener("change", () => { set(KEYS.accent, accentPreset.value); applyTheme(); refreshUI(); });
+    if(compactMode) compactMode.addEventListener("change", () => { set(KEYS.compact, compactMode.checked ? "1":"0"); applyTheme(); refreshUI(); });
+
+    if(panicConfirm) panicConfirm.addEventListener("change", () => set(KEYS.panicConfirm, panicConfirm.checked ? "1":"0"));
+    if(downloadOnFail) downloadOnFail.addEventListener("change", () => set(KEYS.downloadOnFail, downloadOnFail.checked ? "1":"0"));
+    if(openGamesNewTab) openGamesNewTab.addEventListener("change", () => set(KEYS.openGamesNewTab, openGamesNewTab.checked ? "1":"0"));
+
+    if(reset) reset.addEventListener("click", () => {
+      set(KEYS.theme, DEFAULTS.theme);
+      set(KEYS.accent, DEFAULTS.accent);
+      set(KEYS.compact, DEFAULTS.compact);
+      set(KEYS.panicConfirm, DEFAULTS.panicConfirm);
+      set(KEYS.downloadOnFail, DEFAULTS.downloadOnFail);
+      set(KEYS.openGamesNewTab, DEFAULTS.openGamesNewTab);
+      applyTheme();
+      refreshUI();
+    });
+  }
+
+  // Apply theme ASAP
+  applyTheme();
+
+  // Initialize once DOM exists
+  document.addEventListener("DOMContentLoaded", function(){
+    applyTheme();
+    refreshUI();
+    bind();
+  });
+
+  // Expose a couple of flags for other scripts to use (optional)
+  window.__GG_SETTINGS__ = {
+    get openGamesNewTab(){ return get(KEYS.openGamesNewTab, DEFAULTS.openGamesNewTab) === "1"; },
+    get downloadOnFail(){ return get(KEYS.downloadOnFail, DEFAULTS.downloadOnFail) === "1"; }
+  };
+})();
+
+</script>
+</body>
+</html>
